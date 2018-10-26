@@ -59,9 +59,9 @@ for item in listOfLists:
     xVectors.append(x)
     counter = counter + 1
     i=0 #reinitialising the value of i
-print(xVectors)
-print(yValues)
-print(counter)
+#print(xVectors)
+#print(yValues)
+#print(counter)
 
 def calculateLinearFunction(w):
     linearFunction = 0.0
@@ -90,6 +90,7 @@ def calculateGradientAndSSE(lf,w):
     p = 0
     q = 0
     i = 0
+    e = 0
     gradientsList=[]
     while i< len(w):
         grad=0
@@ -97,6 +98,13 @@ def calculateGradientAndSSE(lf,w):
         i=i+1
     #gradient = 0.0
     SSE = 0.0
+    elementTimesErrorList = []
+    temp = xVectors[0]
+    while e < len(temp):
+        x = 0
+        elementTimesErrorList.append(x)
+        e = e+1
+    print('elementTimesErrorList:',elementTimesErrorList)
     while p < len(yValues):
         print(yValues[p])
         error = float(yValues[p]) - float(lf[p])
@@ -109,9 +117,9 @@ def calculateGradientAndSSE(lf,w):
         gradientsList[0]= float(gradientsList[0])+ float(error)
         while q < len(temp):
             print("X: ",temp[q])
-            elementTimesError = float(elementTimesError) + (float(temp[q]) * float(error)) #xi(yi-f(xi))
-            print("element x error: ",elementTimesError)
-            gradientsList[q+1] = float(gradientsList[q+1]) + float(elementTimesError)
+            elementTimesErrorList[q] = float(elementTimesErrorList[q]) + (float(temp[q]) * float(error)) #xi(yi-f(xi))
+            print("element x error: ",elementTimesErrorList[q])
+            gradientsList[q+1] = float(gradientsList[q+1]) + (float(temp[q]) * float(error)) #float(elementTimesErrorList[q])
             if(q==len(temp)-1):
                 print('updated gradient(w2) Value', gradientsList[q+1])
             if(q==len(temp)-2):
@@ -129,7 +137,7 @@ def calculateGradientAndSSE(lf,w):
 
 linearFunctions = []
 linearFunctions = calculateLinearFunction(weights)
-print(linearFunctions)
+#print(linearFunctions)
 
 SSEout=0
 gradientsListOut=[]
