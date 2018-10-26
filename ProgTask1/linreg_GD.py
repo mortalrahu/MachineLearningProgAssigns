@@ -112,10 +112,15 @@ def calculateGradientAndSSE(lf,w):
             elementTimesError = float(elementTimesError) + (float(temp[q]) * float(error)) #xi(yi-f(xi))
             print("element x error: ",elementTimesError)
             gradientsList[q+1] = float(gradientsList[q+1]) + float(elementTimesError)
+            if(q==len(temp)-1):
+                print('updated gradient(w2) Value', gradientsList[q+1])
+            if(q==len(temp)-2):
+                print('updated gradient(w1) Value', gradientsList[q+1])
             q = q+1
         #gradient = float(gradient) + float(elementTimesError)
         SSE = float(SSE) + float(squaredError)
         p = p+1
+        q=0
 
     print('SSE: ',SSE)
     #print('Gradient: ',gradient)
