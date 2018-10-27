@@ -2,22 +2,22 @@
 """
 Created on Sun Oct 21 16:33:16 2018
 
-@author: Sruthi Pasumarthy(220) & Rahul Kodarapu(220850)
+@author: Sruthi Pasumarthy(220651) & Rahul Kodarapu(220850)
 """
 
 import csv #to work on incorrect calculations
-import os
+#import os
 
 threshold=float(input('Enter the Threshold :'))
 learningRate=float(input('Enter the Learning Rate : '))
-fileLocation= input('Please enter file location : ')
-csvFileLoc = os.path.isdir(fileLocation)
+#fileLocation= input('Please enter file location : ')
+#csvFileLoc = os.path.isdir(fileLocation)
 
 
 #threshold = 0.0001
 #learningRate= 0.0001
            
-#csvFileLoc = 'C:\\Users\\rahut\\Desktop\\p1linreg\\random.csv'
+csvFileLoc = 'C:\\Users\\rahut\\Desktop\\p1linreg\\yacht.csv'
 csvFile = open(csvFileLoc,'r')
 reader = csv.reader(csvFile, delimiter = ',')
 numOfRows = len(list(reader))
