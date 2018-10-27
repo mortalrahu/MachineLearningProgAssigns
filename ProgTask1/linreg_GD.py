@@ -6,41 +6,50 @@ Created on Sun Oct 21 16:33:16 2018
 """
 
 import csv #to work on incorrect calculations
+import os
 
-threshold=0.0001
-learningRate=0.0001
+threshold=float(input('Enter the Threshold :'))
+learningRate=float(input('Enter the Learning Rate : '))
+fileLocation= input('Please enter file location : ')
+csvFileLoc = os.path.isdir(fileLocation)
+
+
+#threshold = 0.0001
+#learningRate= 0.0001
            
-csvFileLoc = 'C:\\Users\\rahut\\Desktop\\p1linreg\\random.csv'
+#csvFileLoc = 'C:\\Users\\rahut\\Desktop\\p1linreg\\random.csv'
 csvFile = open(csvFileLoc,'r')
 reader = csv.reader(csvFile, delimiter = ',')
 numOfRows = len(list(reader))
-print("Num of Rows: ",numOfRows)
+#print("Num of Rows: ",numOfRows)
 csvFile.seek(0) #Goes back to the beginning of the file
 listOfLists = []
 firstRow = next(reader,None) #This is because the reader is omitting the first row, so we are forece feeding it. It
 # None tells it that the first row is not a header
 listOfLists.append(firstRow)
-print(len(listOfLists))
-print(listOfLists)
+#print(len(listOfLists))
+#rint(listOfLists)
 csvFile.seek(0)
 numOfCols = len(next(reader))
-print ("Num of Columns: ",numOfCols)
+#print ("Num of Columns: ",numOfCols)
 
 for row in reader:
         listOfLists.append(row)
 
-print(len(listOfLists))
+#print(len(listOfLists))
 weights = []
 j = 0
 while j < numOfCols:
     initialWeight = 0
     weights.append(initialWeight)
     j = j+1
-print('Weights: ',weights)
+#print('Weights: ',weights)
+
+#weights=[-0.0940224666666667, -0.5375774493333338, -0.2591702260000002]
 
 weightsList = []
 weightsList.append(weights)
-print(weightsList)
+#print(weightsList)
 
 i = 0
 xVectors = []
@@ -49,12 +58,12 @@ counter = 0
 for item in listOfLists:
     x = []
     while i < numOfCols:
-        print(item[i])
+        #print(item[i])
         if(i == numOfCols-1):
             yValues.append(item[i])
         else:
             x.append(item[i])
-            print(x)
+            #print(x)
         i = i+1
     xVectors.append(x)
     counter = counter + 1
@@ -72,21 +81,28 @@ def calculateLinearFunction(w):
         #print('LF y : ',yValues[k])
        # print('LF x : ',xVectors[k])
         temp = xVectors[k]
+        #print(temp)
         e=0
-        while e < len(temp):
+        while e < len(temp)+1:
             if(e==0):
                 linearFunction = float(w[e])*float(x0) #Wo*x0, for random
+                #print(linearFunction)
             else:
-                linearFunction = float(linearFunction) + (float(w[e])*float(temp[e])) #w1*x1 + w2*x2,for random
+                #print(float(w[e])*float(temp[e-1]))
+                #print(w[e])
+               # print(temp[e-1])
+                linearFunction = float(linearFunction) + (float(w[e]))*float(temp[e-1]) #w1*x1 + w2*x2,for random
+               # print(linearFunction)
             e = e+1
       #  print('Iteration number: %d',k,' Linear function: %f',linearFunction)
+        #print('value of linear function',linearFunction)
         linearFuncList.append(linearFunction)
         k = k+1
-    print('LinearFuncListLen: ',linearFuncList)
+    #print('LinearFuncListLen: ',linearFuncList)
     return linearFuncList;
 
 
-def calculateGradientAndSSE(lf,w):
+def calculateGradientsAndSSE(lf,w):
     p = 0
     q = 0
     i = 0
@@ -104,46 +120,47 @@ def calculateGradientAndSSE(lf,w):
         x = 0
         elementTimesErrorList.append(x)
         e = e+1
-    print('elementTimesErrorList:',elementTimesErrorList)
+   # print('elementTimesErrorList:',elementTimesErrorList)
     while p < len(yValues):
-        print(yValues[p])
+    #    print(yValues[p])
         error = float(yValues[p]) - float(lf[p])
-        print('Error: ',error)
+     #   print('Error: ',error)
         squaredError = float(error) * float(error)
-        print('Squared Error: ',squaredError)
+      #  print('Squared Error: ',squaredError)
         temp = xVectors[p]
-        print('X Vector: ',temp)
-        elementTimesError = 0.0
+       # print('X Vector: ',temp)
+        #elementTimesError = 0.0
         gradientsList[0]= float(gradientsList[0])+ float(error)
         while q < len(temp):
-            print("X: ",temp[q])
+        #    print("X: ",temp[q])
             elementTimesErrorList[q] = float(elementTimesErrorList[q]) + (float(temp[q]) * float(error)) #xi(yi-f(xi))
-            print("element x error: ",elementTimesErrorList[q])
+         #   print("element x error: ",elementTimesErrorList[q])
             gradientsList[q+1] = float(gradientsList[q+1]) + (float(temp[q]) * float(error)) #float(elementTimesErrorList[q])
-            if(q==len(temp)-1):
-                print('updated gradient(w2) Value', gradientsList[q+1])
-            if(q==len(temp)-2):
-                print('updated gradient(w1) Value', gradientsList[q+1])
+            #if(q==len(temp)-1):
+             #   print('updated gradient(w2) Value', gradientsList[q+1])
+            #if(q==len(temp)-2):
+             #   print('updated gradient(w1) Value', gradientsList[q+1])
             q = q+1
         #gradient = float(gradient) + float(elementTimesError)
         SSE = float(SSE) + float(squaredError)
         p = p+1
         q=0
 
-    print('SSE: ',SSE)
+    #print('SSE: ',SSE)
     #print('Gradient: ',gradient)
-    print('GradientList:',gradientsList)
+    #print('GradientList:',gradientsList)
     return SSE,gradientsList; 
 
 linearFunctions = []
 linearFunctions = calculateLinearFunction(weights)
 #print(linearFunctions)
 
+
 SSEout=0
 gradientsListOut=[]
-SSEout,gradientsListOut=calculateGradientAndSSE(linearFunctions, weights)
-print(SSEout)
-print(gradientsListOut)
+SSEout,gradientsListOut=calculateGradientsAndSSE(linearFunctions, weights)
+#print(SSEout)
+#print(gradientsListOut)
 
 iterationWiseResult=[]
 
@@ -152,9 +169,9 @@ iteration= 0
 resultDisplay.append(iteration)
 resultDisplay.append(weights)
 resultDisplay.append(SSEout)
-print(resultDisplay)
+#print(resultDisplay)
 iterationWiseResult.append(resultDisplay)
-print(iterationWiseResult)
+#print(iterationWiseResult)
 
 def calculateNewWeights(w,g):
     newWeights=[]
@@ -164,13 +181,47 @@ def calculateNewWeights(w,g):
         newWeights.append(nw)
         i=i+1
         nw=0
-    print('newWeights:',newWeights)
+    w=newWeights
+ #   print('newWeights:',newWeights)
     weightsList.append(newWeights)
-    return newWeights;
+    return w;
 
 newWeightsOut=[]
 newWeightsOut= calculateNewWeights(weights,gradientsListOut)
-print(weightsList)
+#print(weightsList)
+
+def updateIterationWeightsSSE(sse,newweightsout):
+    iteration=1
+    SSEnew = sse
+    newWeights= newweightsout
+    gradientsListNew=[]
+    #print(1)
+    #k=0
+    #while k<2:
+    while SSEnew > threshold :
+        #print(2)
+        linearFunctionsNew = []
+        linearFunctionsNew = calculateLinearFunction(newWeights)
+        SSEnew,gradientsListNew=calculateGradientsAndSSE(linearFunctionsNew, newWeights)
+        resultDisplayNew= []
+        resultDisplayNew.append(iteration)
+        resultDisplayNew.append(newWeights)
+        resultDisplayNew.append(SSEnew)
+        iterationWiseResult.append(resultDisplayNew)
+        newWeights= calculateNewWeights(newWeights,gradientsListNew)
+        iteration= iteration+1
+       # k=k+1
+    i=0
+    while i< len(iterationWiseResult):
+  #      print(3)
+        print(iterationWiseResult[i])
+        i= i+1
+    return;
+    
+updateIterationWeightsSSE(SSEout,newWeightsOut)
+
+#print(iterationWiseResult)
+#######################################################
 
 #print('xVectors: %d',len(xVectors))
 #print('yValues: %d',len(yValues))
@@ -188,8 +239,8 @@ print(weightsList)
  #   while j<numOfCols:
         
 
-
-'''numOfCols = len(next(reader))
+'''
+numOfCols = len(next(reader))
 print ("Num of Columns: ",numOfCols)
 i = 0
 listOfLists = []
