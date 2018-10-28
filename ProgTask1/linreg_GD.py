@@ -1,23 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Oct 27 22:53:18 2018
-
-@author: Sruthi Pasumarthy
-"""
-
-# -*- coding: utf-8 -*-
-"""
 Created on Sun Oct 21 16:33:16 2018
-@author: Sruthi Pasumarthy(220) & Rahul Kodarapu(220850)
+@author: Sruthi Pasumarthy(220651) & Rahul Kodarapu(220850)
 """
 
 import csv 
-import os
+#import os
 import sys
+#import re
 
-fileName = sys.argv[1]
-if os.path.exists(fileName):
-    csvFileLoc = os.path.basename(fileName)
+
+#filePath = sys.argv[1]
+#if os.path.exists(fileName):
+#csvFileLoc = re.escape(filePath)
+#print("{!r:}".format(filePath))
+
+#csvFileLoc = "{!r:}".format(filePath)
+#print(csvFileLoc)
 learningRate = float(sys.argv[2])
 threshold = float(sys.argv[3])
 
@@ -34,7 +33,7 @@ csvFileLoc = os.path.isdir(fileLocation)'''
 #learningRate= 0.0001
            
 #csvFileLoc = 'C:\\Users\\rahut\\Desktop\\p1linreg\\random.csv'
-csvFile = open(csvFileLoc,'r')
+csvFile = open(sys.argv[1],'r')
 reader = csv.reader(csvFile, delimiter = ',')
 numOfRows = len(list(reader))
 #print("Num of Rows: ",numOfRows)
@@ -214,6 +213,7 @@ def updateIterationWeightsSSE(sse,newweightsout):
         newWeights= calculateNewWeights(newWeights,gradientsListNew)
         iteration= iteration+1
     i=0
+    print('[Iteration Number,[Weights,incremening order(w0,w1,w2 etc...)],SSE]')
     while i< len(iterationWiseResult):
         print(iterationWiseResult[i])
         i= i+1
