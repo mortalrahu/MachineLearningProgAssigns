@@ -1,17 +1,33 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Oct 21 16:33:16 2018
+Created on Sat Oct 27 22:53:18 2018
 
+@author: Sruthi Pasumarthy
+"""
+
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Oct 21 16:33:16 2018
 @author: Sruthi Pasumarthy(220) & Rahul Kodarapu(220850)
 """
 
-import csv #to work on incorrect calculations
+import csv 
 import os
+import sys
 
-threshold=float(input('Enter the Threshold :'))
+fileName = sys.argv[1]
+if os.path.exists(fileName):
+    csvFileLoc = os.path.basename(fileName)
+learningRate = float(sys.argv[2])
+threshold = float(sys.argv[3])
+
+    
+
+
+'''threshold=float(input('Enter the Threshold :'))
 learningRate=float(input('Enter the Learning Rate : '))
 fileLocation= input('Please enter file location : ')
-csvFileLoc = os.path.isdir(fileLocation)
+csvFileLoc = os.path.isdir(fileLocation)'''
 
 
 #threshold = 0.0001
@@ -85,17 +101,10 @@ def calculateLinearFunction(w):
         e=0
         while e < len(temp)+1:
             if(e==0):
-                linearFunction = float(w[e])*float(x0) #Wo*x0, for random
-                #print(linearFunction)
+                linearFunction = float(w[e])*float(x0) 
             else:
-                #print(float(w[e])*float(temp[e-1]))
-                #print(w[e])
-               # print(temp[e-1])
                 linearFunction = float(linearFunction) + (float(w[e]))*float(temp[e-1]) #w1*x1 + w2*x2,for random
-               # print(linearFunction)
             e = e+1
-      #  print('Iteration number: %d',k,' Linear function: %f',linearFunction)
-        #print('value of linear function',linearFunction)
         linearFuncList.append(linearFunction)
         k = k+1
     #print('LinearFuncListLen: ',linearFuncList)
@@ -146,21 +155,15 @@ def calculateGradientsAndSSE(lf,w):
         p = p+1
         q=0
 
-    #print('SSE: ',SSE)
-    #print('Gradient: ',gradient)
-    #print('GradientList:',gradientsList)
     return SSE,gradientsList; 
 
 linearFunctions = []
 linearFunctions = calculateLinearFunction(weights)
-#print(linearFunctions)
 
 
 SSEout=0
 gradientsListOut=[]
 SSEout,gradientsListOut=calculateGradientsAndSSE(linearFunctions, weights)
-#print(SSEout)
-#print(gradientsListOut)
 
 iterationWiseResult=[]
 
@@ -210,120 +213,12 @@ def updateIterationWeightsSSE(sse,newweightsout):
         iterationWiseResult.append(resultDisplayNew)
         newWeights= calculateNewWeights(newWeights,gradientsListNew)
         iteration= iteration+1
-       # k=k+1
     i=0
     while i< len(iterationWiseResult):
-  #      print(3)
         print(iterationWiseResult[i])
         i= i+1
     return;
     
 updateIterationWeightsSSE(SSEout,newWeightsOut)
 
-#print(iterationWiseResult)
-#######################################################
-
-#print('xVectors: %d',len(xVectors))
-#print('yValues: %d',len(yValues))
-#calculate SSE & gradient should accept the parameters: xVectors, yValues 
-    #in this, we also should calculate f(x), which would need weights
-    #for zeroth iteration, all weights are zero => f(x)=0 but we have to calculte SSE
-#(additional: equate size of xVectors & yValues, remove data from listOfLists)
-#calculate weights accepts parameters: learning rate, weights vector, gradient  
-
- 
-
-#print(len(listOfLists))
-
-#while i<numOfRows:
- #   while j<numOfCols:
         
-
-'''
-numOfCols = len(next(reader))
-print ("Num of Columns: ",numOfCols)
-i = 0
-listOfLists = []
-list1 = []
-print("At 17: ")
-print(len(listOfLists))
-while i < numOfCols:
-    for column in reader:
-        listOfLists.append(column[i])
-        list1.insert(i,column[i])
-    print(len(listOfLists))
-    print(len(list1))
-    i = i+1
-print("At 26: ")
-print(len(listOfLists))
-print(list1)
-csvHeaders = []
-while i < numOfCols:
-    headerNum = 'x'+str(i+1)
-    csvHeaders.append(headerNum)
-    i = i+1 
-    
-print(csvHeaders)
-
-
-data = pd.read_csv(csvFileLoc, header = None, names = csvHeaders)
-    
-print(csvHeaders.x1.tolist())
-import csv
-from collections import defaultdict
-d = defaultdict(list)
-
-csvFileLoc = 'C:\\Users\\Sruthi Pasumarthy\\Desktop\\lr\\random.csv'
-csvFile = open(csvFileLoc,'r')
-reader = csv.reader(csvFile, delimiter = ',')
-numOfCols = len(next(reader))
-i = 0
-csvHeaders = []
-while i < numOfCols:
-    csvHeaders.append(i)
-    i = i+1 
-    
-print(csvHeaders)
-
-for csvHeader in csvHeaders:
-    for column in reader:
-        d[csvHeader].append(column)
-
-print(d)'''
-#print(d)
-'''import pandas as pd
-import csv
-
-csvFileLoc = 'C:\\Users\\Sruthi Pasumarthy\\Desktop\\lr\\random.csv'
-csvFile = open(csvFileLoc,'r')
-reader = csv.reader(csvFile, delimiter = ',')
-numOfCols = len(next(reader))
-print ("Num of Columns: ",numOfCols)
-i = 0
-listOfLists = []
-list1 = []
-print("At 17: ")
-print(len(listOfLists))
-while i < numOfCols:
-    for column in reader:
-        listOfLists.append(column[i])
-        list1.insert(i,column[i])
-    print(len(listOfLists))
-    print(len(list1))
-    i = i+1
-print("At 26: ")
-print(len(listOfLists))
-print(list1)'''
-'''csvHeaders = []
-while i < numOfCols:
-    headerNum = 'x'+str(i+1)
-    csvHeaders.append(headerNum)
-    i = i+1 
-    
-print(csvHeaders)
-
-
-data = pd.read_csv(csvFileLoc, header = None, names = csvHeaders)
-    
-print(csvHeaders.x1.tolist())'''
-    
