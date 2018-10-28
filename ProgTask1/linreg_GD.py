@@ -1,70 +1,43 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Oct 21 16:33:16 2018
-@author: Sruthi Pasumarthy(220651) & Rahul Kodarapu(220850)
+@author: Srilakshmi Sruthi Pasumarthy(220651) & Rahul Gupta Kodarapu(220850)
+Implementation of Gradient Descent -- Linear Regression
 """
 
-import csv 
-#import os
+import csv
 import sys
-#import re
 
 
-#filePath = sys.argv[1]
-#if os.path.exists(fileName):
-#csvFileLoc = re.escape(filePath)
-#print("{!r:}".format(filePath))
-
-#csvFileLoc = "{!r:}".format(filePath)
-#print(csvFileLoc)
-learningRate = float(sys.argv[2])
-threshold = float(sys.argv[3])
-
-    
-
-
-'''threshold=float(input('Enter the Threshold :'))
-learningRate=float(input('Enter the Learning Rate : '))
-fileLocation= input('Please enter file location : ')
-csvFileLoc = os.path.isdir(fileLocation)'''
-
-
-#threshold = 0.0001
-#learningRate= 0.0001
-           
-#csvFileLoc = 'C:\\Users\\rahut\\Desktop\\p1linreg\\random.csv'
 csvFile = open(sys.argv[1],'r')
+learningRate = float(sys.argv[2])
+threshold = float(sys.argv[3])         
+
+
 reader = csv.reader(csvFile, delimiter = ',')
 numOfRows = len(list(reader))
-#print("Num of Rows: ",numOfRows)
 csvFile.seek(0) #Goes back to the beginning of the file
 listOfLists = []
 firstRow = next(reader,None) #This is because the reader is omitting the first row, so we are forece feeding it. It
 # None tells it that the first row is not a header
 listOfLists.append(firstRow)
-#print(len(listOfLists))
-#rint(listOfLists)
 csvFile.seek(0)
 numOfCols = len(next(reader))
-#print ("Num of Columns: ",numOfCols)
 
 for row in reader:
-        listOfLists.append(row)
-
-#print(len(listOfLists))
+        listOfLists.append(row) 
+        #To read all the rows of the csv, each row is stored as a list. All the rows are agaun stored in one-consolidated list 
 weights = []
 j = 0
+
 while j < numOfCols:
     initialWeight = 0
     weights.append(initialWeight)
     j = j+1
-#print('Weights: ',weights)
-
-#weights=[-0.0940224666666667, -0.5375774493333338, -0.2591702260000002]
+    #Initializing all the weights to zero for the zeroth iteration and storing those values in the weights list
 
 weightsList = []
 weightsList.append(weights)
-#print(weightsList)
 
 i = 0
 xVectors = []
@@ -73,30 +46,25 @@ counter = 0
 for item in listOfLists:
     x = []
     while i < numOfCols:
-        #print(item[i])
         if(i == numOfCols-1):
             yValues.append(item[i])
         else:
             x.append(item[i])
-            #print(x)
+            
         i = i+1
     xVectors.append(x)
     counter = counter + 1
     i=0 #reinitialising the value of i
-#print(xVectors)
-#print(yValues)
-#print(counter)
+#Maintaing two seperate lists for X-values and Y-values of each csv row
 
 def calculateLinearFunction(w):
+    #This implements the calculation of linear function(summation of the products of weight(w)&x) 
     linearFunction = 0.0
     k = 0
     x0 = 1
     linearFuncList = []
     while k < len(yValues):
-        #print('LF y : ',yValues[k])
-       # print('LF x : ',xVectors[k])
         temp = xVectors[k]
-        #print(temp)
         e=0
         while e < len(temp)+1:
             if(e==0):
@@ -106,11 +74,11 @@ def calculateLinearFunction(w):
             e = e+1
         linearFuncList.append(linearFunction)
         k = k+1
-    #print('LinearFuncListLen: ',linearFuncList)
     return linearFuncList;
 
 
 def calculateGradientsAndSSE(lf,w):
+    #This implements the calculation of gradient values and the sum of squared error(SSE)
     p = 0
     q = 0
     i = 0
@@ -120,7 +88,6 @@ def calculateGradientsAndSSE(lf,w):
         grad=0
         gradientsList.append(grad)
         i=i+1
-    #gradient = 0.0
     SSE = 0.0
     elementTimesErrorList = []
     temp = xVectors[0]
@@ -128,32 +95,18 @@ def calculateGradientsAndSSE(lf,w):
         x = 0
         elementTimesErrorList.append(x)
         e = e+1
-   # print('elementTimesErrorList:',elementTimesErrorList)
     while p < len(yValues):
-    #    print(yValues[p])
         error = float(yValues[p]) - float(lf[p])
-     #   print('Error: ',error)
         squaredError = float(error) * float(error)
-      #  print('Squared Error: ',squaredError)
         temp = xVectors[p]
-       # print('X Vector: ',temp)
-        #elementTimesError = 0.0
         gradientsList[0]= float(gradientsList[0])+ float(error)
         while q < len(temp):
-        #    print("X: ",temp[q])
             elementTimesErrorList[q] = float(elementTimesErrorList[q]) + (float(temp[q]) * float(error)) #xi(yi-f(xi))
-         #   print("element x error: ",elementTimesErrorList[q])
-            gradientsList[q+1] = float(gradientsList[q+1]) + (float(temp[q]) * float(error)) #float(elementTimesErrorList[q])
-            #if(q==len(temp)-1):
-             #   print('updated gradient(w2) Value', gradientsList[q+1])
-            #if(q==len(temp)-2):
-             #   print('updated gradient(w1) Value', gradientsList[q+1])
+            gradientsList[q+1] = float(gradientsList[q+1]) + (float(temp[q]) * float(error)) 
             q = q+1
-        #gradient = float(gradient) + float(elementTimesError)
         SSE = float(SSE) + float(squaredError)
         p = p+1
         q=0
-
     return SSE,gradientsList; 
 
 linearFunctions = []
@@ -171,11 +124,10 @@ iteration= 0
 resultDisplay.append(iteration)
 resultDisplay.append(weights)
 resultDisplay.append(SSEout)
-#print(resultDisplay)
 iterationWiseResult.append(resultDisplay)
-#print(iterationWiseResult)
 
 def calculateNewWeights(w,g):
+    #This implements the calculation of new values for weights
     newWeights=[]
     i=0
     while i< len(w):
@@ -183,25 +135,20 @@ def calculateNewWeights(w,g):
         newWeights.append(nw)
         i=i+1
         nw=0
-    w=newWeights
- #   print('newWeights:',newWeights)
+    w = newWeights
     weightsList.append(newWeights)
     return w;
 
 newWeightsOut=[]
 newWeightsOut= calculateNewWeights(weights,gradientsListOut)
-#print(weightsList)
 
 def updateIterationWeightsSSE(sse,newweightsout):
+    #This implements the updation of the final results list
     iteration=1
     SSEnew = sse
     newWeights= newweightsout
     gradientsListNew=[]
-    #print(1)
-    #k=0
-    #while k<2:
     while SSEnew > threshold :
-        #print(2)
         linearFunctionsNew = []
         linearFunctionsNew = calculateLinearFunction(newWeights)
         SSEnew,gradientsListNew=calculateGradientsAndSSE(linearFunctionsNew, newWeights)
@@ -213,12 +160,9 @@ def updateIterationWeightsSSE(sse,newweightsout):
         newWeights= calculateNewWeights(newWeights,gradientsListNew)
         iteration= iteration+1
     i=0
-    print('[Iteration Number,[Weights,incremening order(w0,w1,w2 etc...)],SSE]')
     while i< len(iterationWiseResult):
         print(iterationWiseResult[i])
         i= i+1
     return;
     
-updateIterationWeightsSSE(SSEout,newWeightsOut)
-
-        
+updateIterationWeightsSSE(SSEout,newWeightsOut) #Final results list
