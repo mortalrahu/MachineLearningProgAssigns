@@ -1,0 +1,4 @@
+Use Command Prompt(Run as an administrator) and enter command in the following order.
+Python.exe File Path -> Python Script File Path -> Data File Path -> Learning Rate -> Threshold Value
+Eg:-
+C:\python34\python.exe C:\Users\rahut\Documents\GitHub\MachineLearningProgAssigns\ProgTask1\linreg_GD.py C:\Users\rahut\Desktop\p1linreg\yacht.csv 0.0001 50000
