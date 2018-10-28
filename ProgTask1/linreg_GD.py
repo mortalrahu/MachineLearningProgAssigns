@@ -8,11 +8,9 @@ Implementation of Gradient Descent -- Linear Regression
 import csv
 import sys
 
-
 csvFile = open(sys.argv[1],'r')
 learningRate = float(sys.argv[2])
 threshold = float(sys.argv[3])         
-
 
 reader = csv.reader(csvFile, delimiter = ',')
 numOfRows = len(list(reader))
@@ -143,7 +141,7 @@ newWeightsOut=[]
 newWeightsOut= calculateNewWeights(weights,gradientsListOut)
 
 def updateIterationWeightsSSE(sse,newweightsout):
-    #This implements the updation of the final results list
+    #This implements the updation of the final results list(Iteration number, weights & SSE)
     iteration=1
     SSEnew = sse
     newWeights= newweightsout
