@@ -159,7 +159,7 @@ def updateIterationWeightsSSE(sse,newweightsout):
         iteration= iteration+1
     i=0
     print('[Iteration Nr, [Weights i.e., wo, w1, w2 etc..], SSE]')
-    while i< len(iterationWiseResult):
+    while i< len(iterationWiseResult)-1:
         print(iterationWiseResult[i])
         i= i+1
     return;
