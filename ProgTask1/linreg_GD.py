@@ -160,6 +160,7 @@ def updateIterationWeightsSSE(sse,newweightsout):
         newWeights= calculateNewWeights(newWeights,gradientsListNew)
         iteration= iteration+1
     i=0
+    print('[Iteration Nr, [Weights i.e., wo, w1, w2 etc..], SSE]')
     while i< len(iterationWiseResult):
         print(iterationWiseResult[i])
         i= i+1
