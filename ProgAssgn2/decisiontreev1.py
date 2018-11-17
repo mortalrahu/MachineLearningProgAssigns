@@ -26,15 +26,6 @@ calculate infGain from i =1 to remainingAttrs
 
 }
 
-csvFile = open("D://car.csv",'r')
-reader = csv.reader(csvFile, delimiter = ',')
-
-listOfAttributesAndClass = list(reader)
-numOfRows = len(listOfAttributesAndClass)
-print("Num of rows: ",numOfRows)
-csvFile.seek(0) 
-numOfCols = len(next(reader))
-print("Num of cols: ",numOfCols) 
 
 '''
 import pandas as pd
@@ -42,6 +33,9 @@ import math
 
 dataFrame = pd.read_csv("D://car.csv", header = None)
 listOfValues = []
+print(dataFrame[0])
+print(dataFrame.loc[[0]])
+print(dataFrame.iloc[0][4])
 
 for i, item in dataFrame.iteritems():
     temp = item.unique()
@@ -58,8 +52,6 @@ classesCount = []
 for label in listOfValues[columnCount - 1]:
     temp = dataFrame[columnCount - 1].value_counts()[label]
     classesCount.append(temp.tolist())
- #dataFrame[columnCount - 1].value_counts()
-#print(classesCount)
 print(classesCount)
 
 treeEntropy = 0.0
@@ -68,9 +60,15 @@ for i in classesCount:
     treeEntropy = treeEntropy - (probabilityValue * (math.log(probabilityValue)/math.log(len(classesCount))))
 
 print("Entropy: ",treeEntropy)
+attrCount = []
 
-
-
-
-
-
+#for attrList in len(listOfValues - 1):
+tempList = []
+for attrValue in listOfValues[0]:
+    temp = dataFrame[0].value_counts()[attrValue]
+    print(temp)
+    
+    tempList.append(temp.tolist())
+print("AttrValue: ",attrValue)
+   # attrCount.append(tempList)
+        
