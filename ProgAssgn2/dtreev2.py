@@ -69,23 +69,28 @@ def calculateGain(df, attrList, attr):
         
     gain = calculateEntropy(df, attrList) - tempEntropy
     
-    return gain;        
+    return tempEntropy, gain;        
 
 def selectSplitAttr(df, attrList):
     selected = -1
     maxGain = 0.0
     attr = 0
     gainValues = {}
+    entropies = {}
+    entropy = 0.0
+    selectedEntropy = 0.0
     while(attr < len(attrList)):
-        gain = calculateGain(df, attrList, attr)
+        entropy, gain = calculateGain(df, attrList, attr)
         gainValues[str(attr)] = gain
-        print("Attr: ",attr)
+        entropies[str(attr)] = entropy
+        #print("Attr: ",attr)
         attr = attr + 1
     maxGain = max(zip(gainValues.values(),gainValues.keys()))
     if maxGain != 0:
         selected = int(maxGain[1])
         maxGain = maxGain[0]
-    print("Selected: ",selected)
+        selectedEntropy = entropies[str(selected)]
+    print("Selected: ",selected,"  Entropy: ",selectedEntropy)
     print("MaxGain: ",maxGain)
     return selected;
    
@@ -99,24 +104,24 @@ def decisionTree(df, attrList, targetAttr, counter):
         return targetAttr[0]
     else:
         best = selectSplitAttr(df, attrList)
-        print("Best: ",best)
+        #print("Best: ",best)
         tree = {best:{}}
         selectedAttr = attrList[best]
 
         for attrVal in selectedAttr:
-            print("line 97 -  ",attrVal)
+            #print("line 97 -  ",attrVal)
             tempDF = pd.DataFrame(df.loc[df[best] == attrVal])
-            print(len(tempDF[classColumnNum].unique()))
-            print(len(tempDF))
+            #print(len(tempDF[classColumnNum].unique()))
+            #print(len(tempDF))
             if len(tempDF[classColumnNum].unique()) == 1: #pureset
                 tempStr = ''.join(tempDF[classColumnNum].unique())
                 print("Pureset at attr ",best," for value- ",attrVal," Class- ",tempStr)
                 continue
             else: 
-                print(best)
+                #print(best)
                 newAttr = attrList.copy()
                 parsed = attrList[best]
-                print(parsed)
+                #print(parsed)
                 newAttr.remove(parsed)
                 subtree = decisionTree(tempDF, newAttr, targetAttr, counter)
                 
