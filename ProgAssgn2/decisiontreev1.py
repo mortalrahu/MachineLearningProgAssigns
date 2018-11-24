@@ -37,9 +37,13 @@ RECURSIVE FUNCTION NOT WORKING---- INFINITE LOOP
 import pandas as pd
 import math
 from lxml import etree
+# rahul's csv path :  E://courses' materials//drittes Semester//Machine Learning//Prog Ass//ProgAssgn2//decisiontree/car.csv
+#sruthi'S csv path : D://car.csv
 
-dataFrame = pd.read_csv("D://car.csv", header = None)
+dataFrame = pd.read_csv("E://courses' materials//drittes Semester//Machine Learning//Prog Ass//ProgAssgn2//decisiontree/car.csv", header = None)
 listOfValues = []
+print(dataFrame)
+print(dataFrame[0])
 
 for i, item in dataFrame.iteritems():
     temp = item.unique()
@@ -52,19 +56,29 @@ print("Num of rows: ",rowCount)
 columnCount = len(dataFrame.columns)
 print("Num of columns: ",columnCount)
 
+noOfClasses = len(listOfValues[len(listOfValues)-1])
+print(noOfClasses)
 classColumnNum = columnCount - 1
+print(listOfValues[classColumnNum])
+print(dataFrame.values)
+print(dataFrame.iloc[[2]]) #location index
+print(dataFrame.loc[[2]]) # acc to assigned value
+print(dataFrame.iat[2,6]) # location iundex
+print(dataFrame.at[2,6]) # acc to assigned value
+#for us both are the same
+
 
 def calculateEntropy(df, numOfRows): 
         classesCount = []
         for label in listOfValues[classColumnNum]:
-            #print(label," ",label in df.values)
+            print(label," ",label in df.values)
             if(label in df.values):
                 temp = df[classColumnNum].value_counts()[label]
-                #print(temp)
+                print(temp)
                 classesCount.append(temp)
             else:
                 classesCount.append(0)
-        #print(classesCount)
+        print(classesCount)
         
         entropy = 0.0
         for i in classesCount:
@@ -82,6 +96,72 @@ print("Tree Entropy: ",treeEntropy)
 attrList = listOfValues.copy()
 attrList.pop()
 print(attrList)
+
+#sdf = dataFrame[dataFrame[0] == "low"]
+#print(sdf)
+
+def subDataFrame(df,attrValue,attrNo):    
+    sdf = df[df[attrNo]==attrValue]
+    return sdf
+
+#sdf= subDataFrame(dataFrame,"low",0)
+#print(sdf)
+
+def calculateGain(mainEntropy,entropyList,dfLength,sdfLength):
+    i=0
+    gain = mainEntropy
+    while i< len(entropyList)-1 :
+        gain = gain - (sdfLength/dfLength)*(entropyList[i])
+        i= i+1
+    return gain
+
+def recursiveCalculator(df, aList,currentRootEntropy):
+    attrNameList= []
+    a=0
+    entropyList= []
+    gainList= []
+    while a< len(aList):
+        temp = "attr"+ str(a)
+        attrNameList.append(temp)
+        a=a+1
+    print(attrNameList)
+    i=0
+    while i< len(aList):
+        for label in aList[i]:
+            sdf= subDataFrame(df,label,i)
+            print(label,i)
+            noOfRows= len(sdf.index)
+            tempEntropy = calculateEntropy(sdf,noOfRows)
+            print(sdf,noOfRows)
+            entropyList.append(tempEntropy)
+            k=0
+            while k< len(aList[i]):
+                x= aList[i].copy()
+                labelToEntropy ={}
+                labelToEntropy[attrNameList[k]]= x[k]
+                k=k+1
+        tempGain= calculateGain(currentRootEntropy,entropyList,len(df.index),len(sdf.index))
+        gainList.append(tempGain)
+        i=i+1
+    #hashmap for attnames and gains
+    j=0
+    while j< len(gainList):
+        nameToGain ={}
+        nameToGain[attrNameList[j]]= gainList [j]
+        j=j+1
+    maxGain = max(gainList)
+    maxGainIndex= gainList.index(maxGain)
+    #aList.pop(maxGainIndex)
+    return aList, gainList, labelToEntropy,nameToGain,maxGainIndex
+
+a,b,c,d,e = recursiveCalculator(dataFrame,attrList,treeEntropy)
+print(a)
+print(b)
+print(c)
+print(d)
+print(e)
+
+
 
 ''' WORKING CODE
 gainValues = {}
@@ -122,6 +202,7 @@ print(entropyList[y])
 print("***************************************")
 '''
 # //To modify this code---- not working
+print(len(dataFrame.index))
 attrListIsNotEmpty = True
 selectedNode = {}
 dataSetLength = -1
