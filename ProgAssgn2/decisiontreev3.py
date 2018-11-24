@@ -7,11 +7,12 @@ Created on Wed Nov 21 14:35:24 2018
 
 import pandas as pd
 import math
+import xml.etree.ElementTree as ET
 #from lxml import etree
 # rahul's csv path :  E://courses' materials//drittes Semester//Machine Learning//Prog Ass//ProgAssgn2//decisiontree/car.csv
 #sruthi'S csv path : D://car.csv
 
-dataFrame = pd.read_csv("E://courses' materials//drittes Semester//Machine Learning//Prog Ass//ProgAssgn2//decisiontree/car.csv", header = None)
+dataFrame = pd.read_csv("D://car.csv", header = None)
 listOfValues = []
 print(dataFrame)
 print(dataFrame[0])
@@ -118,7 +119,11 @@ print(attrNameList)
 
 
 slice = 'attr'
-def recursiveFunc(df,atList,plantEntropy,aNameList):     #Note: pop the element out once you get the index out
+root = ET.Element('tree', entropy = str(treeEntropy))
+
+#xmlParent = root
+
+def recursiveFunc(df,atList,plantEntropy,aNameList, xmlParent):     #Note: pop the element out once you get the index out
     optAlist,optGainList,Att2Gain,selIndex,optAnameList = infoFetcher(df,atList,plantEntropy,aNameList)
     print('attribute List :',optAlist)
     print('gain List :',optGainList)
@@ -138,31 +143,43 @@ def recursiveFunc(df,atList,plantEntropy,aNameList):     #Note: pop the element 
     updatedaList = optAlist.copy()
     del updatedaList[selIndex]
     i=0
+    subElementAttributes = {}
     while i < len(furtherDiv):
+        node = xmlParent
         label= furtherDiv[i]
-        print('decision',decision)
+        print('decisionvalue',label)
         print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
         nextDataFrame = subDataFrame(df,label,cuttingIndexNum)
         ent,localClassesCount =calculateEntropy(nextDataFrame,len(nextDataFrame.index))
         print(ent)
         if(ent==0):
             j=0
+            non0Class = ""
             while j < len (classLabels):
                 if localClassesCount[j]!=0:
                     non0Class= classLabels[j]
                 #take non0class and print to xml
                 j=j+1
+            subElementAttributes["entropy"] = "0.0"
+            subElementAttributes["value"] = label
+            subElementAttributes["feature"] = decision
+            ET.SubElement(xmlParent, 'node', attrib = subElementAttributes).text = str(non0Class)
             i=i+1
-            print('i:',i)
             continue
+        else:
+            subElementAttributes["entropy"] = str(ent)
+            subElementAttributes["value"] = label
+            subElementAttributes["feature"] = decision
+            node = ET.SubElement(xmlParent, 'node', attrib = subElementAttributes)
         a,b,c,d,e = infoFetcher(nextDataFrame,updatedaList,ent,updatedNameList)
         print('attribute List :',a)
         print('gain List :',b)
         print('attribute to Gain :',c)
         print('Selected Index :',d)
         print('attribute name list :',e)
-        recursiveFunc(nextDataFrame,a,ent,e)   
+        recursiveFunc(nextDataFrame,a,ent,e, node)   
         i=i+1
     return
 
-recursiveFunc(dataFrame,attrList,treeEntropy,attrNameList)
+recursiveFunc(dataFrame,attrList,treeEntropy,attrNameList, root)
+print(ET.tostring(root))
