@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 # rahul's csv path :  E://courses' materials//drittes Semester//Machine Learning//Prog Ass//ProgAssgn2//decisiontree/car.csv
 #sruthi'S csv path : D://car.csv
 
-dataFrame = pd.read_csv("D://car.csv", header = None)
+dataFrame = pd.read_csv("E://courses' materials//drittes Semester//Machine Learning//Prog Ass//ProgAssgn2//decisiontree/car.csv", header = None)
 listOfValues = []
 print(dataFrame)
 print(dataFrame[0])
@@ -35,6 +35,7 @@ print(listOfValues[classColumnNum])
 
 classLabels= listOfValues[classColumnNum]
 
+slice = 'attr'
 
 def calculateEntropy(df, numOfRows): 
         classesCount = []
@@ -83,12 +84,13 @@ def infoFetcher(df, aList,currentRootEntropy,attrNameListLocal):
     nameToGain ={}
     
     print(attrNameListLocal)
+    
     i=0
     while i< len(aList):
         r=0
-       
+        appropColumn = int(attrNameListLocal[i].replace(slice,''))
         for label in aList[i]:
-            sdf= subDataFrame(df,label,i)
+            sdf= subDataFrame(df,label,appropColumn)
             noOfRows= len(sdf.index)
             tempEntropy,tempClassesCount = calculateEntropy(sdf,noOfRows)
            
@@ -118,7 +120,6 @@ while a< len(attrList):
 print(attrNameList)
 
 
-slice = 'attr'
 root = ET.Element('tree', entropy = str(treeEntropy))
 
 #xmlParent = root
