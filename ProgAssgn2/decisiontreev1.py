@@ -433,4 +433,3 @@ for key,val in entropyList[y].items():
     z = etree.SubElement(root, 'node', entropy = str(val), value = str(key), feature = "attr"+str(y))
 print(etree.tostring(root))
 '''
-
