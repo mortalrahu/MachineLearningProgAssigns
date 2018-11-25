@@ -109,6 +109,7 @@ def infoFetcher(df, aList,currentRootEntropy,attrNameListLocal):
     maxGain = max(gainList)
     maxGainIndex= gainList.index(maxGain)
     return aList, gainList,nameToGain,maxGainIndex,attrNameListLocal
+
 a=0
 attrNameList= []
 while a< len(attrList):
@@ -120,8 +121,6 @@ print(attrNameList)
 
 slice = 'attr'
 root = ET.Element('tree', entropy = str(treeEntropy))
-
-#xmlParent = root
 
 def recursiveFunc(df,atList,plantEntropy,aNameList, xmlParent):     #Note: pop the element out once you get the index out
     optAlist,optGainList,Att2Gain,selIndex,optAnameList = infoFetcher(df,atList,plantEntropy,aNameList)
@@ -177,9 +176,9 @@ def recursiveFunc(df,atList,plantEntropy,aNameList, xmlParent):     #Note: pop t
         print('attribute to Gain :',c)
         print('Selected Index :',d)
         print('attribute name list :',e)
-        recursiveFunc(nextDataFrame,a,ent,e, node)   
+        recursiveFunc(nextDataFrame, a, ent, e, node)   
         i=i+1
     return
 
-recursiveFunc(dataFrame,attrList,treeEntropy,attrNameList, root)
+recursiveFunc(dataFrame, attrList, treeEntropy, attrNameList, root)
 print(ET.tostring(root))
