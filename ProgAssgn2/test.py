@@ -108,6 +108,7 @@ def infoFetcher(df, aList,currentRootEntropy,attrNameListLocal):
     while i< len(aList):
         #labelToEntropy ={}
         r=0
+        appropColumn = int(attrNameListLocal[i].replace(slice,''))
         #k=0
         print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')             
         print('i=',i)
@@ -115,7 +116,7 @@ def infoFetcher(df, aList,currentRootEntropy,attrNameListLocal):
         print(len(aList[i]))
         print('########################################################')
         for label in aList[i]:
-            sdf= subDataFrame(df,label,i)
+            sdf= subDataFrame(df,label,appropColumn)
             print(label,i)
             noOfRows= len(sdf.index)
             tempEntropy,tempClassesCount = calculateEntropy(sdf,noOfRows)
