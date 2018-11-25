@@ -8,7 +8,14 @@ Created on Thu Nov 22 15:49:49 2018
 import pandas as pd
 import math
 
-dataFrame = pd.read_csv("D://car.csv", header = None)
+
+inputFile = "D://car.csv"
+subStrStartLimit = inputFile.rindex('/')
+subStrEndLimit = inputFile.index('.csv')
+
+outputFile = inputFile[subStrStartLimit + 1 : subStrEndLimit] + "_output.xml"
+
+dataFrame = pd.read_csv(inputFile, header = None)
 listOfValues = []
 
 for i, item in dataFrame.iteritems():

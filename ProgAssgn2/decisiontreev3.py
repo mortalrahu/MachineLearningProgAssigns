@@ -1,46 +1,64 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Nov 21 14:35:24 2018
+Created on Thu Nov 15 18:18:17 2018
 
-@author: rahut
+@authors: Srilakshmi Sruthi Pasumarthy(220651)
+          Rahul Gupta Kodarapu(220850)
+          Abdullah Al Zubaer(218074)
 """
 
 import pandas as pd
 import math
 import xml.etree.ElementTree as ET
-#from lxml import etree
-# rahul's csv path :  E://courses' materials//drittes Semester//Machine Learning//Prog Ass//ProgAssgn2//decisiontree/car.csv
-#sruthi'S csv path : D://car.csv
+import sys
+import os
 
-dataFrame = pd.read_csv("E://courses' materials//drittes Semester//Machine Learning//Prog Ass//ProgAssgn2//decisiontree/car.csv", header = None)
-listOfValues = []
-print(dataFrame)
-print(dataFrame[0])
+inputFileName = sys.argv[1]
+if os.path.exists(inputFileName):
+    inputFile = os.path.basename(inputFileName)
+
+outputFileName = sys.argv[2]
+if os.path.exists(outputFileName):
+    outputFile = os.path.basename(outputFileName)
+
+dataFrame = pd.read_csv(inputFile, header = None)
+uniqueValues = []
 
 for i, item in dataFrame.iteritems():
     temp = item.unique()
-    listOfValues.append(temp.tolist())
-print(listOfValues)
+    uniqueValues.append(temp.tolist())
 
 rowCount = len(dataFrame.index)
-print("Num of rows: ",rowCount)
 
 columnCount = len(dataFrame.columns)
-print("Num of columns: ",columnCount)
 
-noOfClasses = len(listOfValues[len(listOfValues)-1])
-print(noOfClasses)
+noOfClasses = len(uniqueValues[len(uniqueValues)-1])
 classColumnNum = columnCount - 1
-print(listOfValues[classColumnNum])
 
-classLabels= listOfValues[classColumnNum]
+classLabels= uniqueValues[classColumnNum]
 
-slice = 'attr'
+slice = 'att'
 
+attrList = uniqueValues.copy()
+attrList.pop()
+
+a=0
+attrNameList= []
+while a< len(attrList):
+        temp = "att"+ str(a)
+        attrNameList.append(temp)
+        a=a+1
+
+"""
+function: calculateEntropy
+Inputs Params: dataFrame, length of the dataFrame
+Output Params: entropy, number of classes in the dataFrame
+This function implements the calculation of entropy on a given dataset(here, dataframe)
+"""
 def calculateEntropy(df, numOfRows): 
         classesCount = []
-        for label in listOfValues[classColumnNum]:
-            if(label in df.values):
+        for label in uniqueValues[classColumnNum]:
+            if(label in df[classColumnNum].values):
                 temp = df[classColumnNum].value_counts()[label]
                 classesCount.append(temp)
             else:
@@ -55,131 +73,126 @@ def calculateEntropy(df, numOfRows):
                 continue
         return entropy,classesCount  
 
-treeEntropy,classesCountOpt = calculateEntropy(dataFrame,rowCount)
-print("Tree Entropy: ",treeEntropy)
-print('classesCount for tree entropy',classesCountOpt )
+#treeEntropy - the total entropy of the dataset
+treeEntropy,classesCountOutput = calculateEntropy(dataFrame,rowCount)
 
-attrList = listOfValues.copy()
-attrList.pop()
-print(attrList)
+#xmlRoot - root node for the output xml
+xmlRoot = ET.Element('tree', entropy = str(treeEntropy))
 
-
-def subDataFrame(df,attrValue,attrNo):    
-    sdf = df[df[attrNo]==attrValue]
+"""
+function: subDataFrame
+Inputs Params: dataFrame, attribute value, attribute(index of the attribute)
+Output Params: part of the dataFrame
+This function implements the split on a given dataframe, based on a value of an attribute 
+"""
+def subDataFrame(df,attrValue,attrNum):    
+    sdf = df[df[attrNum]==attrValue]
     return sdf
 
 
-def calculateGain(mainEntropy,entropyList,dfLength,sdfLength):
+"""
+function: calculateGain
+Inputs Params: parent node entropy, list of entropy values, length of the dataframe, length of the sub dataframe
+Output Params: gain value
+This function implements the calculation of Gain on a particular attribute 
+"""
+def calculateGain(parentNodeEntropy,entropyList,dfLength,sdfLength):
     i=0
-    gain = mainEntropy
+    gain = parentNodeEntropy
     while i< len(entropyList):
         gain = gain - (sdfLength/dfLength)*(entropyList[i])
         i= i+1
     return gain
 
-def infoFetcher(df, aList,currentRootEntropy,attrNameListLocal):
+
+"""
+function: infoFetcher
+Inputs Params: dataframe, list of attributes, node entropy, list of entropy values, list of attributes with assigned names
+Output Params: list of attributes, list of gain values, list of attributes with respective gain values, index of attribute with maximum gain value, list of attribute names
+This function implements the calculation of Gain on a given attribute 
+"""
+def infoFetcher(df, attributesList,currentNodeEntropy,attrNameListUpdated):
     entropyList= []
     listOfEntropyLists = []
     gainList= []
-    nameToGain ={}
-    
-    print(attrNameListLocal)
+    attrNameWithGainValues ={}
     
     i=0
-    while i< len(aList):
+    while i< len(attributesList):
         r=0
-        appropColumn = int(attrNameListLocal[i].replace(slice,''))
-        for label in aList[i]:
-            sdf= subDataFrame(df,label,appropColumn)
+        splitColumn = int(attrNameListUpdated[i].replace(slice,''))
+        for label in attributesList[i]:
+            sdf= subDataFrame(df,label,splitColumn)
             noOfRows= len(sdf.index)
             tempEntropy,tempClassesCount = calculateEntropy(sdf,noOfRows)
            
-            if r < len(aList[i]):
+            if r < len(attributesList[i]):
                 entropyList.append(tempEntropy)
-            if r==len(aList[i])-1:
+            if r==len(attributesList[i])-1:
                 listOfEntropyLists.append(entropyList)
                 entropyList= []
             r=r+1
-        tempGain= calculateGain(currentRootEntropy,listOfEntropyLists[i],len(df.index),len(sdf.index))
+        tempGain= calculateGain(currentNodeEntropy,listOfEntropyLists[i],len(df.index),len(sdf.index))
         gainList.append(tempGain)
         i=i+1
     #hashmap for attnames and gains
     j=0
     while j< len(gainList):
-        nameToGain[attrNameListLocal[j]]= gainList [j]
+        attrNameWithGainValues[attrNameListUpdated[j]]= gainList [j]
         j=j+1
     maxGain = max(gainList)
     maxGainIndex= gainList.index(maxGain)
-    return aList, gainList,nameToGain,maxGainIndex,attrNameListLocal
+    return attributesList, gainList,attrNameWithGainValues,maxGainIndex,attrNameListUpdated
 
-a=0
-attrNameList= []
-while a< len(attrList):
-        temp = "attr"+ str(a)
-        attrNameList.append(temp)
-        a=a+1
-print(attrNameList)
-
-
-root = ET.Element('tree', entropy = str(treeEntropy))
-
-def recursiveFunc(df,atList,plantEntropy,aNameList, xmlParent):     #Note: pop the element out once you get the index out
-    optAlist,optGainList,Att2Gain,selIndex,optAnameList = infoFetcher(df,atList,plantEntropy,aNameList)
-    print('attribute List :',optAlist)
-    print('gain List :',optGainList)
-    print('attribute to Gain :',Att2Gain)
-    print('Selected Index :',selIndex)
-    print('attribute name list :',optAnameList)
-    decision= optAnameList[selIndex] #make xmlhere
-    furtherDiv= optAlist[selIndex]
-    print(furtherDiv)
-    cuttingIndexNum = int(decision.replace(slice,''))
-    print(cuttingIndexNum)
-    ##########use the decision to initialize the tree
-    updatedNameList = optAnameList.copy()
-    print(updatedNameList)
-    del updatedNameList[selIndex]
-    print(updatedNameList)
-    updatedaList = optAlist.copy()
-    del updatedaList[selIndex]
+"""
+function: decisionTree
+Inputs Params: dataframe, list of attributes, entropy of the parent node, list of attribute names, parent node for XML 
+This function recursively implements the decision tree based on Quinlan's ID3 algorithm.
+"""
+def decisionTree(df,attributesList,parentNodeEntropy,attributeNamesList, xmlParent):
+    outputAttributesList,outputGainList,outputAttributeWithGain,selectedIndex,outputAttributeNamesList = infoFetcher(df,attributesList,parentNodeEntropy,attributeNamesList)
+    decision= outputAttributeNamesList[selectedIndex] 
+    furtherDiv= outputAttributesList[selectedIndex]
+    splitIndex = int(decision.replace(slice,''))
+    #use the decision to initialize the tree
+    updatedNameList = outputAttributeNamesList.copy()
+    del updatedNameList[selectedIndex]
+    updatedattributesList = outputAttributesList.copy()
+    del updatedattributesList[selectedIndex]
     i=0
-    subElementAttributes = {}
+    xmlSubElementAttributes = {}
     while i < len(furtherDiv):
-        node = xmlParent
+        xmlNode = xmlParent
         label= furtherDiv[i]
-        print('decisionvalue',label)
-        print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-        nextDataFrame = subDataFrame(df,label,cuttingIndexNum)
-        ent,localClassesCount =calculateEntropy(nextDataFrame,len(nextDataFrame.index))
-        print(ent)
-        if(ent==0):
+        nextDataFrame = subDataFrame(df,label,splitIndex)
+        entropy,currentClassesCount =calculateEntropy(nextDataFrame,len(nextDataFrame.index))
+        if(entropy==0):
             j=0
-            non0Class = ""
+            pureSetLabel = ""
             while j < len (classLabels):
-                if localClassesCount[j]!=0:
-                    non0Class= classLabels[j]
-                #take non0class and print to xml
+                if currentClassesCount[j]!=0:
+                    pureSetLabel= classLabels[j]
                 j=j+1
-            subElementAttributes["entropy"] = "0.0"
-            subElementAttributes["value"] = label
-            subElementAttributes["feature"] = decision
-            ET.SubElement(xmlParent, 'node', attrib = subElementAttributes).text = str(non0Class)
+            xmlSubElementAttributes["entropy"] = "0.0"
+            xmlSubElementAttributes["value"] = label
+            xmlSubElementAttributes["feature"] = decision
+            ET.SubElement(xmlParent, 'node', attrib = xmlSubElementAttributes).text = str(pureSetLabel)
             i=i+1
             continue
         else:
-            subElementAttributes["entropy"] = str(ent)
-            subElementAttributes["value"] = label
-            subElementAttributes["feature"] = decision
-            node = ET.SubElement(xmlParent, 'node', attrib = subElementAttributes)
-        a,b,c,d,e = infoFetcher(nextDataFrame,updatedaList,ent,updatedNameList)
-        print('attribute List :',a)
-        print('gain List :',b)
-        print('attribute to Gain :',c)
-        print('Selected Index :',d)
-        print('attribute name list :',e)
-        recursiveFunc(nextDataFrame, a, ent, e, node)   
+            xmlSubElementAttributes["entropy"] = str(entropy)
+            xmlSubElementAttributes["value"] = label
+            xmlSubElementAttributes["feature"] = decision
+            xmlNode = ET.SubElement(xmlParent, 'node', attrib = xmlSubElementAttributes)
+        attList,gainList,attNameToGain,maxGainIndex,attNameList = infoFetcher(nextDataFrame,updatedattributesList,entropy,updatedNameList)
+        decisionTree(nextDataFrame, attList, entropy, attNameList, xmlNode)   
         i=i+1
     return
 
-recursiveFunc(dataFrame, attrList, treeEntropy, attrNameList, root)
-print(ET.tostring(root))
+#invocation of decision tree function
+decisionTree(dataFrame, attrList, treeEntropy, attrNameList, xmlRoot)
+
+#writing into xml
+xml = ET.ElementTree(xmlRoot)
+xml.write(outputFile)
+print("ID3 has been performed successfully on the given dataset. The generated output is in the following XML: ",outputFile)
