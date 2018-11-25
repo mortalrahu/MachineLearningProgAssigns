@@ -15,13 +15,14 @@ import os
 
 inputFileName = sys.argv[1]
 if os.path.exists(inputFileName):
-    inputFile = os.path.basename(inputFileName)
+    dataFrame = pd.read_csv(inputFileName, header = None)
+else:
+    print("Please enter a valid filepath")
+
 
 outputFileName = sys.argv[2]
-if os.path.exists(outputFileName):
-    outputFile = os.path.basename(outputFileName)
 
-dataFrame = pd.read_csv(inputFile, header = None)
+
 uniqueValues = []
 
 for i, item in dataFrame.iteritems():
@@ -194,5 +195,5 @@ decisionTree(dataFrame, attrList, treeEntropy, attrNameList, xmlRoot)
 
 #writing into xml
 xml = ET.ElementTree(xmlRoot)
-xml.write(outputFile)
-print("ID3 has been performed successfully on the given dataset. The generated output is in the following XML: ",outputFile)
+xml.write(outputFileName)
+print("ID3 has been performed successfully on the given dataset. The generated output is in the following XML: ",outputFileName)
