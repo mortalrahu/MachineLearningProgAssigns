@@ -7,27 +7,27 @@ Created on Thu Nov 29 14:36:17 2018
           Abdullah Al Zubaer(218074)
 """
 import pandas as pd
-#import math
+import csv
 #import sys
-#import os
 
+#C://Users//rahut//Documents//GitHub//MachineLearningProgAssigns//ProgAssgn3//perceptron//Example.tsv
 
-inputFileName = "C://Users//rahut//Documents//GitHub//MachineLearningProgAssigns//ProgAssgn3//perceptron//Example.tsv"#sys.argv[1]
-#if os.path.exists(inputFileName):
+inputFileName = "D://Example.tsv"
+outputFileName = "D://ExampleOutput.tsv"
+
+'''
+inputFileName = sys.argv[1]
+outputFileName = sys.argv[2]
+'''
 dataFrame = pd.read_csv(inputFileName,sep = '\t',header = None)
 learningRate = 0.0001
-#else:
- #   print("Please enter a valid filepath")
+MAX_NUM_OF_ITERATIONS = 100
 
-#outputFileName = sys.argv[2]
 rowCount = len(dataFrame.index)
 columnCount = len(dataFrame.columns)
-print(columnCount)
-print(dataFrame.iloc[0][columnCount-1])
 dataFrame.dropna()
-if(pd.isnull(dataFrame.iloc[0][columnCount-1]) ==True):
+if(pd.isnull(dataFrame.iloc[0][columnCount-1]) == True):
     dataFrame = dataFrame.drop(columnCount-1,axis=1)
-print(dataFrame)
 columnCount = len(dataFrame.columns)
 weights = []
 j = 0
@@ -41,35 +41,32 @@ while j < columnCount:
 weightsList = []
 weightsList.append(weights)
 
-print(weights)
-print(weightsList)
-
 xVectorsDF = dataFrame.drop(0,axis=1)
-print(xVectorsDF)
-print(xVectorsDF.iloc[[0]])
 xVectors=[]
 
 for row in xVectorsDF.iterrows():
     index, data = row
     xVectors.append(data.tolist())
     
-print(xVectors)
 classList = dataFrame[0].tolist()
-print(classList)
-print(len(classList))
+
 classListInNum = []
 i=0
 while i< len(classList):
-    if(classList[i]== 'A'):
+    if(classList[i] == 'A'):
         classListInNum.append(1)
     else:
         classListInNum.append(0)
     i=i+1
     
-print(classListInNum)
-
-def decideNoOfDiff(dFrame,classList,w):
-    diffCount = 0
+"""
+function: applyPerceptron
+Inputs Params: dataframe, list of classes, list of weights
+Output Params: errorValue, list of Activation function output values
+This function implements the functionality of a single perceptron with an activation function.
+"""
+def applyPerceptron(dFrame,classList,w):
+    errorValue = 0
     d=0
     perceptronFunction = 0.0
     k = 0
@@ -81,52 +78,54 @@ def decideNoOfDiff(dFrame,classList,w):
         temp = xVectors[k]
         e=0
         while e < len(temp)+1:
-            if(e==0):
+            if(e == 0):
                 perceptronFunction = float(w[e])*float(x0) 
             else:
                 perceptronFunction = float(perceptronFunction) + (float(w[e]))*float(temp[e-1]) #w1*x1 + w2*x2,for random
             e = e+1
-        if(perceptronFunction>0):
+        if(perceptronFunction > 0):
             perceptronFuncList.append('A')
         else:
             perceptronFuncList.append('B')
         k = k+1
     while d < len(perceptronFuncList):
-        if(perceptronFuncList[d]!= classList[d]):
-            diffCount = diffCount +1
+        if(perceptronFuncList[d] != classList[d]):
+            errorValue = errorValue +1
         d=d+1
     while p < len(perceptronFuncList):
-        if(perceptronFuncList[p]== 'A'):
+        if(perceptronFuncList[p] == 'A'):
             perceptronFuncListInNum.append(1)
         else:
             perceptronFuncListInNum.append(0)
         p=p+1
     
-    return diffCount, perceptronFuncList,perceptronFuncListInNum;
+    return errorValue,perceptronFuncListInNum;
 
-dc,pflout,pflinout= decideNoOfDiff(dataFrame,classList,weights)
-print(dc)
-print(pflout)
-print(pflinout)
+error, activationFuncOutputs= applyPerceptron(dataFrame,classList,weights)
 
-nonAnnealingError = []
-annealingError = []
+errorValuesConstantLR = []
+errorValuesAnnealingLR = []
 
-nonAnnealingError.append(dc)
-annealingError.append(dc)
+errorValuesConstantLR.append(error)
+errorValuesAnnealingLR.append(error)
 
-def calculateGradients(pflin,w):
-    #This implements the calculation of gradient values and the sum of squared error(SSE)
+"""
+function: calculateGradients
+Input Params: list of perception activation function output values, list of weights
+Output Params: list of gradient values
+This function implements the calculation of gradient values.
+"""
+def calculateGradients(afOutputs,w):
     p = 0
     q = 0
     i = 0
     e = 0
-    gradientsList=[]
+    gradientValues=[]
     while i< len(w):
         grad=0
-        gradientsList.append(grad)
+        gradientValues.append(grad)
         i=i+1
-    #SSE = 0.0
+
     elementTimesErrorList = []
     temp = xVectors[0]
     while e < len(temp):
@@ -134,26 +133,28 @@ def calculateGradients(pflin,w):
         elementTimesErrorList.append(x)
         e = e+1
     while p < len(classList):
-        error = float(classListInNum[p]) - float(pflin[p])
-        #squaredError = float(error) * float(error)
+        error = float(classListInNum[p]) - float(afOutputs[p])
         temp = xVectors[p]
-        gradientsList[0]= float(gradientsList[0])+ float(error)
+        gradientValues[0]= float(gradientValues[0])+ float(error)
         while q < len(temp):
             elementTimesErrorList[q] = float(elementTimesErrorList[q]) + (float(temp[q]) * float(error)) #xi(yi-f(xi))
-            gradientsList[q+1] = float(gradientsList[q+1]) + (float(temp[q]) * float(error)) 
+            gradientValues[q+1] = float(gradientValues[q+1]) + (float(temp[q]) * float(error)) 
             q = q+1
-        #SSE = float(SSE) + float(squaredError)
         p = p+1
         q=0
-    return gradientsList; 
+    return gradientValues; 
+
+listOfGradientValues=[]
+listOfGradientValues = calculateGradients(activationFuncOutputs, weights)
 
 
-#SSEout=0
-gradientsListOut=[]
-gradientsListOut=calculateGradients(pflinout, weights)
-
-def calculateNewWeights(w,g):
-    #This implements the calculation of new values for weights
+"""
+function: updateWeightsConstantLR
+Input Params: list of weights, list of gradient values
+Output Params: list of weights(updated)
+This function implements the calculation of new weights with constant learning rate
+"""
+def updateWeightsConstantLR(w,g):
     newWeights=[]
     i=0
     while i< len(w):
@@ -165,11 +166,16 @@ def calculateNewWeights(w,g):
     weightsList.append(newWeights)
     return w;
 
-newWeightsOut=[]
-newWeightsOut= calculateNewWeights(weights,gradientsListOut)
+updatedWeights=[]
+updatedWeights= updateWeightsConstantLR(weights,listOfGradientValues)
 
-def calculateNewWeightsAnnealing(w,g,af):
-    #This implements the calculation of new values for weights
+"""
+function: updateWeightsAnnealingLR
+Input Params: list of weights, list of gradient values, activation function
+Output Params: list of weights(updated)
+This function implements the calculation of new weights with annealing learning rate
+"""
+def updateWeightsAnnealingLR(w,g,af):
     newWeights=[]
     i=0
     while i< len(w):
@@ -180,67 +186,62 @@ def calculateNewWeightsAnnealing(w,g,af):
     w = newWeights
     weightsList.append(newWeights)
     return w;
-newWeightsOutAnnealing=[]
-newWeightsOutAnnealing= calculateNewWeightsAnnealing(weights,gradientsListOut,1)
 
-#
-#print('#1',newWeightsOut)
-#      
-#
-#dc2,pflout2,pflinout2= decideNoOfDiff(dataFrame,classList,newWeightsOut)
-#print(dc2)
-#print(pflout2)
-#print(pflinout2)
-#
-#gradientsListOut2=[]
-#gradientsListOut2=calculateGradients(pflinout2, newWeightsOut)
-#
-#newWeightsOut2=[]
-#newWeightsOut2= calculateNewWeights(newWeightsOut,gradientsListOut2)
-#
-#print('#2',newWeightsOut2)
-#      
-#dc3,pflout3,pflinout3= decideNoOfDiff(dataFrame,classList,newWeightsOut2)
-#print(dc3)
-#print(pflout3)
-#print(pflinout3)
-#
-#gradientsListOut3=[]
-#gradientsListOut3=calculateGradients(pflinout3, newWeightsOut2)
-#
-#newWeightsOut3=[]
-#newWeightsOut3= calculateNewWeights(newWeightsOut2,gradientsListOut3)
-#
-#print('#3',newWeightsOut3)
+updatedWeightsAnnealing=[]
+updatedWeightsAnnealing= updateWeightsAnnealingLR(weights,listOfGradientValues,1)
 
-def recursiveFunction(newWeightsOut):
-    na = 0
-    newWeightsNew = newWeightsOut
-    while na < 100:
-        dcNew,pflNew,pflinNew = decideNoOfDiff(dataFrame,classList,newWeightsNew)
-        nonAnnealingError.append(dcNew)
-        gradientsListNew =[]
-        gradientsListNew = calculateGradients(pflinNew,newWeightsNew)
-        newWeightsNew = calculateNewWeights(newWeightsNew,gradientsListNew)
-        na= na+1
-    print(nonAnnealingError)
-    return;
+"""
+function: getErrorValuesWithConstantLearningRate
+Input Params: list of weights
+Output Params: list of error values
+This function invokes the function for calculation of errors with constant learning rate, iteratively.
+"""
+def getErrorValuesWithConstantLearningRate(updatedWeights):
+    counter = 0
+    weightsListTemp = updatedWeights
+    while counter < MAX_NUM_OF_ITERATIONS:
+        errorNew,afOutputs = applyPerceptron(dataFrame,classList,weightsListTemp)
+        errorValuesConstantLR.append(errorNew)
+        gradientsListTemp = []
+        gradientsListTemp = calculateGradients(afOutputs,weightsListTemp)
+        weightsListTemp = updateWeightsConstantLR(weightsListTemp,gradientsListTemp)
+        counter = counter + 1
+        
+    return errorValuesConstantLR;
+ 
+"""
+function: getErrorValuesWithAnnealingLearningRate
+Input Params: list of weights
+Output Params: list of error values
+This function invokes the function for calculation of errors with annealing learning rate, iteratively.
+"""
+def getErrorValuesWithAnnealingLearningRate(updatedWeights):
+    counter = 0
+    weightsListTemp = updatedWeights
+    while counter < MAX_NUM_OF_ITERATIONS:
+        errorNew,afOutputs = applyPerceptron(dataFrame,classList,weightsListTemp)
+        errorValuesAnnealingLR.append(errorNew)
+        gradientsListTemp = []
+        gradientsListTemp = calculateGradients(afOutputs,weightsListTemp)
+        weightsListTemp = updateWeightsAnnealingLR(weightsListTemp,gradientsListTemp,counter+2)
+        counter = counter + 1
+        
+    return errorValuesAnnealingLR;
     
-def recursiveFunctionAnnealing(newWeightsOut):
-    na = 0
-    newWeightsNew = newWeightsOut
-    while na < 100:
-        dcNew,pflNew,pflinNew = decideNoOfDiff(dataFrame,classList,newWeightsNew)
-        annealingError.append(dcNew)
-        gradientsListNew =[]
-        gradientsListNew = calculateGradients(pflinNew,newWeightsNew)
-#        if(na==0):
-#            newWeightsNew = calculateNewWeightsAnnealing(newWeightsNew,gradientsListNew,1)
-#        else:
-        newWeightsNew = calculateNewWeightsAnnealing(newWeightsNew,gradientsListNew,na+2)
-        na= na+1
-    print(annealingError)
-    return;
+nonAnnealingList = getErrorValuesWithConstantLearningRate(updatedWeights)
+annealingList = getErrorValuesWithAnnealingLearningRate(updatedWeightsAnnealing)
+
+with open(outputFileName, 'w', encoding='utf8', newline='') as outputTSV:
+    tsvWriter = csv.writer(outputTSV, delimiter='\t', lineterminator='\n')
+    if nonAnnealingList:
+        tsvWriter.writerow(nonAnnealingList)
+    else:
+        print("With constant learning rate, no error values to display")
     
-recursiveFunction(newWeightsOut)
-recursiveFunctionAnnealing(newWeightsOutAnnealing)
+    if annealingList:
+        tsvWriter.writerow(annealingList)
+    else:
+        print("With annealing learning rate, no error values to display")
+
+print('The output is generated in the following file: ',outputFileName)
+        
