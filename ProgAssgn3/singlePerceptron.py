@@ -237,7 +237,7 @@ def recursiveFunctionAnnealing(newWeightsOut):
 #        if(na==0):
 #            newWeightsNew = calculateNewWeightsAnnealing(newWeightsNew,gradientsListNew,1)
 #        else:
-        newWeightsNew = calculateNewWeightsAnnealing(newWeightsNew,gradientsListNew,na+1)
+        newWeightsNew = calculateNewWeightsAnnealing(newWeightsNew,gradientsListNew,na+2)
         na= na+1
     print(annealingError)
     return;
