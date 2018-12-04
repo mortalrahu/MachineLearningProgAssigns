@@ -8,17 +8,11 @@ Created on Thu Nov 29 14:36:17 2018
 """
 import pandas as pd
 import csv
-#import sys
+import sys
 
-#C://Users//rahut//Documents//GitHub//MachineLearningProgAssigns//ProgAssgn3//perceptron//Example.tsv
-
-inputFileName = "D://Example.tsv"
-outputFileName = "D://ExampleOutput.tsv"
-
-'''
 inputFileName = sys.argv[1]
 outputFileName = sys.argv[2]
-'''
+
 dataFrame = pd.read_csv(inputFileName,sep = '\t',header = None)
 learningRate = 0.0001
 MAX_NUM_OF_ITERATIONS = 100
