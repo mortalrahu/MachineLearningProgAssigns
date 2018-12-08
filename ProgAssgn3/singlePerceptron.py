@@ -14,7 +14,7 @@ inputFileName = sys.argv[1]
 outputFileName = sys.argv[2]
 
 dataFrame = pd.read_csv(inputFileName,sep = '\t',header = None)
-learningRate = 0.0001
+learningRate = 1
 MAX_NUM_OF_ITERATIONS = 100
 
 rowCount = len(dataFrame.index)
