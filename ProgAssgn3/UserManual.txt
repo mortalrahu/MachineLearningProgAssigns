@@ -1,0 +1,3 @@
+The command Prompt statement should be as follows:
+
+C:\Users\rahut\AppData\Local\Programs\Python\Python37\python.exe C:\Users\rahut\Documents\GitHub\MachineLearningProgAssigns\ProgAssgn3\singlePerceptron.py C:\Users\rahut\Desktop\Example.tsv C:\Users\rahut\Desktop\ExampleSol.tsv
