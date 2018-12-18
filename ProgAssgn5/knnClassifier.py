@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Dec 14 10:47:57 2018
+Created on Fri Dec 18 10:47:57 2018
 
 @authors: Srilakshmi Sruthi Pasumarthy(220651)
           Rahul Gupta Kodarapu(220850)
@@ -13,7 +13,7 @@ import pandas as pd
 #Rahul's path = C://Users//rahut//Documents//GitHub//MachineLearningProgAssigns//ProgAssgn4//nb//Example.tsv
 #Sruti's Path = 
 
-inputFileName ="C://Users//rahut//Documents//GitHub//MachineLearningProgAssigns//ProgAssgn4//nb//Example.tsv" #sys.argv[1]
+inputFileName ="C://Users//rahut//Documents//GitHub//MachineLearningProgAssigns//ProgAssgn5//kNN//Example-shuffled.tsv" #sys.argv[1]
 #outputFileName = sys.argv[2]
 
 dataFrame = pd.read_csv(inputFileName,sep = '\t',header = None)
