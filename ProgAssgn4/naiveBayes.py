@@ -111,41 +111,49 @@ def resultCalculator():
         g=g+1
     tempResult = listOfResult
     j=0
-    print('#1')
     while j < numOfClasses:
-        print('#2')
         h=0
         tempDecHelp=[]
         refBox = tempResult[j]
         while h < rowCount:     
             b= 1
-            tempCondProb=[]
-            o=0
-            den =0
+            tempCondProbXC=[]
             while b < columnCount:
                 if((b%2) ==1):
                     temp = (1/(math.sqrt(2.*math.pi)*refBox[b]))*math.exp(-(dataFrame[b][h]-refBox[b-1])/(2*refBox[b]*refBox[b]))
                 else:
                     temp = (1/(math.sqrt(2.*math.pi)*refBox[b+1]))*math.exp(-(dataFrame[b][h]-refBox[b])/(2*refBox[b+1]*refBox[b+1]))
-                tempCondProb.append(temp)
+                tempCondProbXC.append(temp)
                 b=b+1
-            while o < len(tempCondProb):
-                den = den + (tempCondProb[o]*refBox[len(refBox)-1])
-                o=o+1
-            condProbCX = ((tempCondProb[0]*refBox[len(refBox)-1])/den) #*((tempCondProb[1]*refBox[len(refBox)-1])/den) 
-            tempDecHelp.append(condProbCX)
+            proCondProbXC = tempCondProbXC[0]*tempCondProbXC[1] 
+            tempDecHelp.append(proCondProbXC)
             h=h+1
         decHelp.append(tempDecHelp)
         j= j+1
     r=0
-    print(len(decHelp[0]),len(decHelp[1]))
-    print(decHelp)
+    listOfCondProbCX = [] 
+    print('lcpcx',listOfCondProbCX)
     while r < rowCount:
-        if(decHelp[0][r] > decHelp[1][r]):
+        print('#1')
+        tempCPCXs =[]
+        den = decHelp[0][r]+ decHelp[1][r]
+        o= 0
+        while o < numOfClasses:
+            print('#2')
+            temp= decHelp[o][r]/den
+            tempCPCXs.append(temp)
+            o=o+1
+        listOfCondProbCX.append(tempCPCXs)
+        r=r+1
+    print(len(listOfCondProbCX))
+    print(listOfCondProbCX)
+    y=0
+    while y< rowCount:     
+        if(listOfCondProbCX[y][0] > listOfCondProbCX[y][1]):
             classDecision.append('A')
         else:
             classDecision.append('B')
-        r=r+1
+        y=y+1
     print(classDecision)
     u=0
     while u < rowCount:
