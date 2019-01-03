@@ -8,28 +8,22 @@ Created on Fri Dec 14 10:47:57 2018
 """
 import pandas as pd
 import math
-#import csv
-#import sys
+import csv
+import sys
 
 #Rahul's path = C://Users//rahut//Documents//GitHub//MachineLearningProgAssigns//ProgAssgn4//nb//Example.tsv
 #Sruti's Path = 
 
-inputFileName ="C://Users//rahut//Documents//GitHub//MachineLearningProgAssigns//ProgAssgn4//nb//Example.tsv" #sys.argv[1]
-#outputFileName = sys.argv[2]
+inputFileName = sys.argv[1]
+outputFileName =sys.argv[2]
 
 dataFrame = pd.read_csv(inputFileName,sep = '\t',header = None)
-#learningRate = 1
-#MAX_NUM_OF_ITERATIONS = 100
-
 rowCount = len(dataFrame.index)
 columnCount = len(dataFrame.columns)
 dataFrame.dropna()
 if(pd.isnull(dataFrame.iloc[0][columnCount-1]) == True):
     dataFrame = dataFrame.drop(columnCount-1,axis=1)
 columnCount = len(dataFrame.columns)
-#print(dataFrame)
-#print(columnCount)
-#print(dataFrame[0][0])
 
 uniqueValues = []
 
@@ -95,10 +89,6 @@ def calcMyuSigmaAndProbability(aCI,indexOfaCI):
     resultFormat.append(probability)
     return resultFormat
 
-#a = calcMyuSigmaAndProbability(amtOfClassInstances,0)
-#print(a)
-
-
 def resultCalculator():
     listOfResult=[]
     classDecision=[]
@@ -132,21 +122,16 @@ def resultCalculator():
         j= j+1
     r=0
     listOfCondProbCX = [] 
-    print('lcpcx',listOfCondProbCX)
     while r < rowCount:
-        print('#1')
         tempCPCXs =[]
         den = decHelp[0][r]*0.5+ decHelp[1][r]*0.5
         o= 0
         while o < numOfClasses:
-            print('#2')
             temp= decHelp[o][r]*0.5/den
             tempCPCXs.append(temp)
             o=o+1
         listOfCondProbCX.append(tempCPCXs)
         r=r+1
-    print(len(listOfCondProbCX))
-    print(listOfCondProbCX)
     y=0
     while y< rowCount:     
         if(listOfCondProbCX[y][0] > listOfCondProbCX[y][1]):
@@ -154,14 +139,23 @@ def resultCalculator():
         else:
             classDecision.append('B')
         y=y+1
-    print(classDecision)
     u=0
     while u < rowCount:
         if(classList[u]!= classDecision[u]):
             missClass = missClass +1
         u=u+1
-    listOfResult.append(missClass)
+    listOfMissClass = []
+    listOfMissClass.append(missClass)
+    listOfResult.append(listOfMissClass)
     return listOfResult
 
-r = resultCalculator()
-print(r)
+listToBePrinted = resultCalculator()
+
+with open(outputFileName, 'w', encoding='utf8', newline='') as outputTSV:
+    tsvWriter = csv.writer(outputTSV, delimiter='\t', lineterminator='\n')
+    if listToBePrinted:
+        tsvWriter.writerows(listToBePrinted)
+    else:
+        print("no values to display")
+
+print('The output is generated in the following file: ',outputFileName)
