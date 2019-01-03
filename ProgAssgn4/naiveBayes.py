@@ -120,9 +120,9 @@ def resultCalculator():
             tempCondProbXC=[]
             while b < columnCount:
                 if((b%2) ==1):
-                    temp = (1/(math.sqrt(2.*math.pi)*refBox[b]))*math.exp(-(dataFrame[b][h]-refBox[b-1])/(2*refBox[b]*refBox[b]))
+                    temp = (1/(math.sqrt(2.*math.pi*refBox[b])))*math.exp(-((dataFrame[b][h]-refBox[b-1])*(dataFrame[b][h]-refBox[b-1]))/(2*refBox[b]))
                 else:
-                    temp = (1/(math.sqrt(2.*math.pi)*refBox[b+1]))*math.exp(-(dataFrame[b][h]-refBox[b])/(2*refBox[b+1]*refBox[b+1]))
+                    temp = (1/(math.sqrt(2.*math.pi*refBox[b+1])))*math.exp(-((dataFrame[b][h]-refBox[b])*(dataFrame[b][h]-refBox[b]))/(2*refBox[b+1]))
                 tempCondProbXC.append(temp)
                 b=b+1
             proCondProbXC = tempCondProbXC[0]*tempCondProbXC[1] 
@@ -136,11 +136,11 @@ def resultCalculator():
     while r < rowCount:
         print('#1')
         tempCPCXs =[]
-        den = decHelp[0][r]+ decHelp[1][r]
+        den = decHelp[0][r]*0.5+ decHelp[1][r]*0.5
         o= 0
         while o < numOfClasses:
             print('#2')
-            temp= decHelp[o][r]/den
+            temp= decHelp[o][r]*0.5/den
             tempCPCXs.append(temp)
             o=o+1
         listOfCondProbCX.append(tempCPCXs)
