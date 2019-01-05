@@ -11,9 +11,6 @@ import math
 import csv
 import sys
 
-#Rahul's path = C://Users//rahut//Documents//GitHub//MachineLearningProgAssigns//ProgAssgn4//nb//Example.tsv
-#Sruti's Path = 
-
 inputFileName = sys.argv[1]
 outputFileName =sys.argv[2]
 
@@ -51,6 +48,13 @@ while i < numOfClasses:
        j=j+1
    amtOfClassInstances.append(temp)    
    i=i+1
+   
+"""
+function: calcMyuSigmaAndProbability
+Input Params: Number of Class Instances, Index 
+Output Params: list of Myus, Sigmas and Class Probabilities
+This function computes the Myu, Sigma and Perobability for each class for appropriate attributes.
+"""
 
 def calcMyuSigmaAndProbability(aCI,indexOfaCI):
     k=0
@@ -88,6 +92,13 @@ def calcMyuSigmaAndProbability(aCI,indexOfaCI):
         p=p+1
     resultFormat.append(probability)
     return resultFormat
+
+"""
+function: resultCalculator
+Input Params: No Parameters
+Output Params: List of Mys, Sigmas. Probabilities for each class and Number of Missclassificiations
+This function invokes 'calcMyuSigmaAndProbability' function and uses the output of that function to further calculate Number of Missclassifications .
+"""
 
 def resultCalculator():
     listOfResult=[]
