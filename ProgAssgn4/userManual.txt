@@ -1,3 +1,0 @@
-The command Prompt statement should be as follows:
-
-C:\Users\rahut\AppData\Local\Programs\Python\Python37\python.exe C:\Users\rahut\Documents\GitHub\MachineLearningProgAssigns\ProgAssgn4\naiveBayes.py C:\Users\rahut\Documents\GitHub\MachineLearningProgAssigns\ProgAssgn4\nb\Example.tsv C:\Users\rahut\Desktop\ExampleSol.tsv
